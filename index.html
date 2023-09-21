@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Ventas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Estilos CSS para el diseño de la página */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f5f9; /* Fondo azul claro */
+        }
+
+        /* Estilo para el contenedor principal */
+        #container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Estilos para los dos apartados */
+        .section {
+            border: 1px solid #d2e2e8;
+            border-radius: 5px;
+            background-color: #fff; /* Fondo blanco */
+            padding: 20px;
+            margin: 10px;
+            height: 340px;
+        }
+
+        h1, h2 {
+            color: #3a6ea5; /* Texto azul pastel */
+            padding: 0;
+            margin: 0;
+            margin-bottom: 10px;
+        }
+
+        /* Estilos para el formulario */
+        #form-container {
+            background-color: #fff; /* Fondo blanco */
+            border: 1px solid #d2e2e8; /* Borde azul claro */
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        select, input, button {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #d2e2e8; /* Borde azul claro */
+            border-radius: 3px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3a6ea5; /* Fondo azul pastel */
+            color: #fff; /* Texto blanco */
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #26578d; /* Cambio de color al pasar el cursor */
+        }
+
+        /* Estilos para la lista de ventas */
+        #total-container {
+            background-color: #fff; /* Fondo blanco */
+            border: 1px solid #d2e2e8; /* Borde azul claro */
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #d2e2e8; /* Borde azul claro */
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #c3d8e3; /* Fondo azul pastel */
+        }
+
+        /* Estilos para la tabla de totales */
+        #totales-container table {
+            width: 100%;
+        }
+
+        #totales-container th {
+            background-color: #c3d8e3; /* Fondo azul pastel */
+        }
+
+        #totales-container td {
+            background-color: #fff; /* Fondo blanco */
+        }
+
+        /* Estilos para el contenedor del total de ventas */
+        .section {
+            width: 30%;
+            margin-bottom: 20px;
+        }
+
+        #total-suma-ventas {
+            background-color: #fff; /* Fondo blanco */
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <!-- Apartado para Agregar Venta -->
+    <div class="section">
+        <h2 align="center">Agregar Venta</h2>
+        <form id="venta-form" align="center">
+            <input type="hidden" id="venta-index" value="-1">
+
+            <label for="tipo">Tipo:</label>
+            <select id="tipo" required>
+                <option value="Agua">Agua</option>
+                <option value="Queso Llanero">Queso Llanero</option>
+                <option value="Jamón">Jamón</option>
+                <option value="Queso Gauda">Queso Gauda</option>
+                <option value="Hielo">Hielo</option>
+                <option value="Liquidos">Liquidos</option>
+            </select><br>
+
+            <!-- Agregar campo de selección de tamaño -->
+            <div id="tamano-container" style="display: none;">
+                <label for="tamano">Liquido:</label>
+                <select id="tamano">
+                    <option value="Coca Cola 3L">Coca Cola 3L</option>
+                    <option value="Coca Cola 2L">Coca Cola 2L</option>
+                    <option value="Coca Cola 1.75L">Coca Cola 1.75L</option>
+                    <option value="Coca Cola 1.5L">Coca Cola 1.5L</option>
+                </select><br>
+            </div>
+
+            <div id="gramos-container">
+                <label for="gramos">Gramos:</label>
+                <input type="number" id="gramos"><br>
+            </div>
+
+            <label for="apto">Apto:</label>
+            <input type="number" id="apto" required><br>
+
+            <label for="costo">Costo:</label>
+            <input type="number" id="costo" required><br>
+
+            <label for="forma-pago">Forma de Pago:</label>
+            <select id="forma-pago" required>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+            </select><br>
+
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" required><br>
+
+            <button type="button" id="agregar-editar-venta" onclick="agregarEditarVenta()">Agregar Venta</button>
+            <button type="button" id="eliminar-ventas" onclick="confirmarEliminarVentas()">Eliminar Ventas</button>
+        </form>
+    </div>
+
+    <!-- Apartado para Total de Suma de las Ventas -->
+    <div class="section">
+        <h2 align="center">Suma del Total</h2>
+        <div id="total-suma-ventas">
+            <!-- Contenido para mostrar el total de ventas -->
+            <table>
+                <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Efectivo</th>
+                    <th>Transferencia</th>
+                </tr>
+                </thead>
+                <tbody id="totales-lista">
+                <!-- Los totales se mostrarán aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Apartado para Registro de Ventas -->
+<div>
+    <h2 align="center" style="margin-top: 1%;margin-bottom: 1%;font-size: 200%;">Registro de Ventas</h2>
+    <div id="total-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Gramos</th>
+                <th>Liquido/Tamaño</th> <!-- Modificado para mostrar el campo "Liquido/Tamaño" -->
+                <th>Apto</th>
+                <th>Costo</th>
+                <th>Forma de Pago</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="ventas-lista">
+            <!-- Las ventas registradas se mostrarán aquí -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Array para almacenar las ventas registradas
+    let ventas = [];
+
+    // Variable para almacenar el índice de la venta en edición
+    let ventaEnEdicion = -1;
+
+    // Cargar las ventas desde el localStorage al iniciar la página
+    if (localStorage.getItem("ventas")) {
+        ventas = JSON.parse(localStorage.getItem("ventas"));
+        actualizarListaVentas();
+        actualizarTotales();
+    }
+
+    // Función para agregar o editar una venta
+    function agregarEditarVenta() {
+        const tipo = document.getElementById("tipo").value;
+        const gramos = parseFloat(document.getElementById("gramos").value);
+        const tamano = document.getElementById("tamano").value; // Agregar campo de tamaño
+        const apto = document.getElementById("apto").value;
+        const costo = parseFloat(document.getElementById("costo").value);
+        const formaPago = document.getElementById("forma-pago").value;
+        const fecha = document.getElementById("fecha").value;
+
+        // Validar que el campo de costo sea un número válido
+        if (isNaN(costo)) {
+            alert("Por favor, ingrese un valor numérico válido en el campo de costo.");
+            return;
+        }
+
+        if (ventaEnEdicion === -1) {
+            // Agregar una nueva venta
+            const venta = {
+                tipo,
+                gramos,
+                tamano, // Agregar campo de tamaño
+                apto,
+                costo,
+                formaPago,
+                fecha
+            };
+            ventas.push(venta);
+        } else {
+            // Editar una venta existente
+            ventas[ventaEnEdicion].tipo = tipo;
+            ventas[ventaEnEdicion].gramos = gramos;
+            ventas[ventaEnEdicion].tamano = tamano; // Agregar campo de tamaño
+            ventas[ventaEnEdicion].apto = apto;
+            ventas[ventaEnEdicion].costo = costo;
+            ventas[ventaEnEdicion].formaPago = formaPago;
+            ventas[ventaEnEdicion].fecha = fecha;
+        }
+
+        // Guardar las ventas en el localStorage
+        localStorage.setItem("ventas", JSON.stringify(ventas));
+
+        // Limpiar los campos del formulario
+        document.getElementById("venta-form").reset();
+
+        // Actualizar la lista de ventas en la página
+        actualizarListaVentas();
+
+        // Cambiar el título del formulario de nuevo a "Agregar Venta"
+        document.getElementById("form-title").textContent = "Agregar Venta";
+        document.getElementById("agregar-editar-venta").textContent = "Agregar Venta";
+        document.getElementById("venta-index").value = -1;
+
+        // Ocultar el campo de "Gramos"
+        document.getElementById("gramos-container").style.display = "none";
+
+        // Restablecer el valor de ventaEnEdicion
+        ventaEnEdicion = -1;
+
+        // Actualizar los totales
+        actualizarTotales();
+    }
+
+    // Función para eliminar todas las ventas con confirmación
+    function confirmarEliminarVentas() {
+        if (confirm("¿Estás seguro de eliminar todas las ventas?")) {
+            eliminarVentas();
+        }
+    }
+
+    // Función para editar una venta
+    function editarVenta(index) {
+        // Habilitar la edición de la venta
+        ventaEnEdicion = index;
+
+        // Mostrar botones de Guardar y Cancelar
+        document.getElementById("form-title").textContent = "Editar Venta";
+        document.getElementById("agregar-editar-venta").textContent = "Guardar Edición";
+        document.getElementById("venta-index").value = index;
+
+        // Rellenar los campos del formulario con los datos de la venta a editar
+        const venta = ventas[index];
+        document.getElementById("tipo").value = venta.tipo;
+        document.getElementById("tamano").value = venta.tamano; // Agregar campo de tamaño
+        document.getElementById("gramos").value = venta.gramos || "";
+        document.getElementById("apto").value = venta.apto;
+        document.getElementById("costo").value = venta.costo;
+        document.getElementById("forma-pago").value = venta.formaPago;
+        document.getElementById("fecha").value = venta.fecha;
+
+        // Mostrar u ocultar los campos "Gramos" y "Tamaño" según el tipo seleccionado
+        mostrarOcultarCamposAdicionales();
+    }
+
+    // Función para eliminar una venta
+    function eliminarVenta(index) {
+        ventas.splice(index, 1);
+        localStorage.setItem("ventas", JSON.stringify(ventas));
+        actualizarListaVentas();
+        actualizarTotales();
+    }
+
+    // Función para eliminar todas las ventas
+    function eliminarVentas() {
+        if (confirm("¿Estás seguro de eliminar todas las ventas?")) {
+            ventas = [];
+            localStorage.removeItem("ventas");
+            actualizarListaVentas();
+            actualizarTotales();
+        }
+    }
+
+    // Función para actualizar la lista de ventas en la página
+    function actualizarListaVentas() {  
+        const ventasLista = document.getElementById("ventas-lista");
+        ventasLista.innerHTML = "";
+
+        ventas.forEach((venta, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${venta.tipo}</td>
+                <td>${venta.gramos || ""}</td>
+                <td>${venta.tipo === "Liquidos" ? venta.tamano : ""}</td> <!-- Mostrar solo si el tipo es Liquidos -->
+                <td>${venta.apto}</td>
+                <td>${venta.costo}</td>
+                <td>${venta.formaPago}</td>
+                <td>${venta.fecha}</td>
+                <td>
+                    <button onclick="editarVenta(${index})">Editar</button>
+                    <button onclick="eliminarVenta(${index})">Eliminar</button>
+                </td>
+            `;
+            ventasLista.appendChild(row);
+        });
+
+        // Actualizar los totales después de actualizar la lista de ventas
+        actualizarTotales();
+    }
+
+    // Función para actualizar los totales
+    function actualizarTotales() {
+        // Tipos de productos y formas de pago
+        const tipos = ["Agua", "Queso Llanero", "Jamón", "Queso Gauda", "Hielo", "Liquidos"];
+        const formasPago = ["Efectivo", "Transferencia"];
+
+        // Obtener la lista de totales
+        const totalesLista = document.getElementById("totales-lista");
+        totalesLista.innerHTML = "";
+
+        // Calcular y mostrar los totales
+        tipos.forEach((tipo) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${tipo}</td>
+                <td>${calcularTotalPorTipoYFormaPago(tipo, "Efectivo")}</td>
+                <td>${calcularTotalPorTipoYFormaPago(tipo, "Transferencia")}</td>
+            `;
+            totalesLista.appendChild(row);
+        });
+    }
+
+    // Función para calcular el total de ventas por tipo y forma de pago
+    function calcularTotalPorTipoYFormaPago(tipo, formaPago) {
+        const ventasFiltradas = ventas.filter((venta) => venta.tipo === tipo && venta.formaPago === formaPago);
+        return ventasFiltradas.reduce((total, venta) => total + parseFloat(venta.costo), 0).toFixed(2);
+    }
+
+    // Función para mostrar u ocultar los campos "Gramos" y "Tamaño" según el tipo seleccionado
+    function mostrarOcultarCamposAdicionales() {
+        const tipo = document.getElementById("tipo").value;
+        const gramosContainer = document.getElementById("gramos-container");
+        const tamanoContainer = document.getElementById("tamano-container"); // Contenedor de tamaño
+
+        // Mostrar el campo "Gramos" solo si se selecciona uno de los tipos específicos
+        if (tipo === "Queso Llanero" || tipo === "Jamón" || tipo === "Queso Gauda") {
+            gramosContainer.style.display = "block";
+        } else {
+            gramosContainer.style.display = "none";
+        }
+
+        // Mostrar el campo "Tamaño" solo si se selecciona "Liquidos"
+        if (tipo === "Liquidos") {
+            tamanoContainer.style.display = "block";
+        } else {
+            tamanoContainer.style.display = "none";
+        }
+    }
+
+    // Llamar a la función mostrarOcultarCamposAdicionales cuando cambie la selección de "Tipo"
+    document.getElementById("tipo").addEventListener("change", mostrarOcultarCamposAdicionales);
+
+    // Llamar a la función mostrarOcultarCamposAdicionales al cargar la página para configurar los campos inicialmente
+    mostrarOcultarCamposAdicionales();
+</script>
+</body>
+</html>
